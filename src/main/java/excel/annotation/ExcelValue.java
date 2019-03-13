@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ExcelValue {
 
-    String value();
+    String value() default "";
     String[] sort() default {};
 
 }

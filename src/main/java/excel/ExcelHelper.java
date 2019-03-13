@@ -19,8 +19,6 @@ public class ExcelHelper {
 
     private static Map<Integer, Field> map = new TreeMap<>();
 
-    private static List<Integer> locations = new ArrayList<>();
-
     /**
      * 通过注解 @ExcelValue 解析 excel 值到 bean 中
      * @param cls
@@ -117,7 +115,7 @@ public class ExcelHelper {
         String[] val = f.getAnnotation(ExcelValue.class).sort();
         for (int i = 1; i <= val.length; i++) {
             if (type == i) {
-                location = Integer.valueOf(val[i]);
+                location = Integer.valueOf(val[i - 1]);
             }
         }
         return location;
