@@ -31,7 +31,7 @@ public class ExcelUtil<T> {
      * @param location 需要取的数据的位置，第一个从 0 开始
      * @return
      */
-    public static List<String> readExcelValue(InputStream is, boolean isExcel2003, Object[] location) {
+    public static List<String> readExcelValue(InputStream is, boolean isExcel2003, Object[] location) throws IOException {
         List<String> list = null;
         try {
             /** 根据版本选择创建Workbook的方式 */
@@ -46,6 +46,8 @@ public class ExcelUtil<T> {
             list = readExcelValue(wb, location);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            is.close();
         }
         return list;
 

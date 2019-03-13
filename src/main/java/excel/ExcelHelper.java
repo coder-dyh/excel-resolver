@@ -2,6 +2,7 @@ package excel;
 
 import excel.annotation.ExcelValue;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -25,7 +26,7 @@ public class ExcelHelper {
      * @param is
      * @param isExcel2003
      */
-    public static <T> List<T> parseExcelValueToBean(Class<?> cls, InputStream is, boolean isExcel2003) {
+    public static <T> List<T> parseExcelValueToBean(Class<?> cls, InputStream is, boolean isExcel2003)  throws IOException {
         return resolveExcel(cls, is, isExcel2003, null);
     }
 
@@ -34,7 +35,7 @@ public class ExcelHelper {
      * @param cls
      * @param is
      */
-    public static <T> List<T> parseExcelValueToBean(Class<?> cls, InputStream is) {
+    public static <T> List<T> parseExcelValueToBean(Class<?> cls, InputStream is)  throws IOException {
         return resolveExcel(cls, is, false, null);
     }
 
@@ -45,11 +46,11 @@ public class ExcelHelper {
      * @param isExcel2003
      * @param type 类型，使用 @ExcelValue(arr={1, 2})时指定需要选择哪种读取方式
      */
-    public static <T> List<T> parseExcelValueToBean(Class<?> cls, InputStream is, boolean isExcel2003, Integer type) {
+    public static <T> List<T> parseExcelValueToBean(Class<?> cls, InputStream is, boolean isExcel2003, Integer type) throws IOException {
         return resolveExcel(cls, is, isExcel2003, type);
     }
 
-    public static <T> List<T> resolveExcel(Class<?> cls, InputStream is, boolean isExcel2003, Integer type) {
+    public static <T> List<T> resolveExcel(Class<?> cls, InputStream is, boolean isExcel2003, Integer type) throws IOException {
         List<Integer> fieldList = getFieldWithExcelValueAnnotation(cls, type);
         List<String> values = ExcelUtil.readExcelValue(is, isExcel2003, fieldList.toArray());
 
