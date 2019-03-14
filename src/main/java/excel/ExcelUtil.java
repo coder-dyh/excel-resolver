@@ -1,6 +1,7 @@
 package excel;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
@@ -31,11 +32,18 @@ public class ExcelUtil<T> {
      * @param location 需要取的数据的位置，第一个从 0 开始
      * @return
      */
-    public static List<String> readExcelValue(InputStream is, boolean isExcel2003, Object[] location) throws IOException {
+    /**
+     * 解析获取 excel 并获取指定位置的值
+     * @param is InputStream
+     * @param isExcel2003 是否是 xls
+     * @param location 需要取的数据的位置，第一个从 0 开始
+     * @return
+     */
+    public static List<String> readExcelValue(InputStream is, boolean isExcel2003, Integer[] location) {
         List<String> list = null;
+        Workbook wb = null;
         try {
             /** 根据版本选择创建Workbook的方式 */
-            Workbook wb = null;
             // 当excel是2003时
             if (isExcel2003) {
                 wb = new HSSFWorkbook(is);
@@ -47,7 +55,8 @@ public class ExcelUtil<T> {
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            is.close();
+            IOUtils.closeQuietly(is);
+            IOUtils.closeQuietly(wb);
         }
         return list;
 
@@ -79,17 +88,17 @@ public class ExcelUtil<T> {
             Row row = sheet.getRow(r);
             if (row == null)
                 continue;
-
-            String no = null;
-            for (int c = 0; c < totalCells; c++) {
-                row.getCell(c).setCellType(Cell.CELL_TYPE_STRING);
-                Cell cell = row.getCell(c);
-                for (int i = 0; i < location.length; i ++) {
-                    if ((Integer) location[i] == c) {
-                        customerList.add(cell.getStringCellValue());
-                    }
+            for (int i = 0; i < location.length; i ++) {
+                Cell cell = row.getCell((Integer) location[i]);
+                if (cell != null) {
+                    cell.setCellType(Cell.CELL_TYPE_STRING);
+                    String vl = cell.getStringCellValue();
+                    customerList.add(vl);
+                }else{
+                    customerList.add(null);
                 }
             }
+
         }
         return customerList;
     }
